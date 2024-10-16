@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Um jogo 2D multiplayer</title>
+    <style>
+        #screen {
+            border: 10px solid #ccc;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tetris 2</h1>
+    <canvas id="screen" width="10" height="10"> </canvas>
+    <script>
+        const screen = document.getElementById('screen');
+        const context = screen.getContext('2d');
+        const currentPlayerId = 'player1'
+
+        const game = {
+            players: {
+                'player1': { x: 1, y: 1},
+                'player2': { x: 9, y: 9},
+            },
+            fruits: {
+                'fruit1': { x: 3, y: 1},
+            }
+        }
+
+        document.addEventListener('keydown', handleKeydown)
+        renderScreen()
+
+        function handleKeydown(event){
+            const keyPressed = event.key
+
+            switch(keyPressed){
+                case 'ArrowUp':
+                    if(game.players[currentPlayerId].y - 1 >= 0){
+                        game.players[currentPlayerId].y--
+                    }
+                    break
+                case 'ArrowDown':
+                    if(game.players[currentPlayerId].y + 1 < screen.height){
+                        game.players[currentPlayerId].y++
+                    }
+                    break
+                case 'ArrowLeft':
+                    if(game.players[currentPlayerId].x - 1 >= 0) {
+                        game.players[currentPlayerId].x--
+                    }
+                    break
+                case 'ArrowRight':
+                    if(game.players[currentPlayerId].x + 1 < screen.width){
+                        game.players[currentPlayerId].x++
+                    }
+                    break
+                default:
+                    return
+            }
+        }
+
+        function renderScreen(){
+            clearScreen()
+
+            for(const playerId in game.players){
+                const player = game.players[playerId]
+                context.fillStyle = 'black'
+                context.fillRect(player.x, player.y, 1, 1)
+            }
+
+            for(const fruitId in game.fruits){
+                const fruit = game.fruits[fruitId]
+                context.fillStyle = 'green'
+                context.fillRect(fruit.x, fruit.y, 1, 1)
+            }
+
+            requestAnimationFrame(renderScreen)
+        }
+
+        function clearScreen(){
+            context.fillStyle = 'white'
+            context.clearRect(0, 0, 10, 10)
+        }
+    </script>
+</body>
+</html>
